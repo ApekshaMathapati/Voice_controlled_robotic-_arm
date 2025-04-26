@@ -1,0 +1,415 @@
+#VRML_SIM R2023a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/Floor.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/BrushedAluminium.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/GalvanizedMetal.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/appearances/protos/Rubber.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/tables/protos/Table.proto"
+
+WorldInfo {
+  info [
+    "Voice controlled robotic arm simulation"
+  ]
+  title "Industrial Robotic Arm"
+  basicTimeStep 16
+}
+Viewpoint {
+  orientation -0.3 0.7 0.65 1.0
+  position 1.2 1.2 1.0
+  follow "ARM"
+}
+TexturedBackground {
+  skyColor [0.1 0.1 0.3]
+}
+TexturedBackgroundLight {
+  luminosity 1.2
+}
+Floor {
+  size 5 5
+  tileSize 0.5 0.5
+  appearance PBRAppearance {
+    baseColorMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/appearances/protos/textures/parquetry/chequered_parquetry_base_color.jpg"
+      ]
+    }
+    roughnessMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/appearances/protos/textures/parquetry/chequered_parquetry_roughness.jpg"
+      ]
+    }
+    metalness 0
+    roughness 1
+    normalMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/appearances/protos/textures/parquetry/chequered_parquetry_normal.jpg"
+      ]
+    }
+    occlusionMap ImageTexture {
+      url [
+        "https://raw.githubusercontent.com/cyberbotics/webots/R2022a/projects/appearances/protos/textures/parquetry/chequered_parquetry_occlusion.jpg"
+      ]
+    }
+  }
+}
+DirectionalLight {
+  direction 0.5 -0.5 -0.5
+  intensity 2
+}
+SpotLight {
+  attenuation 0 0 1
+  beamWidth 0.7
+  cutOffAngle 0.9
+  direction 0 0 -1
+  intensity 5
+  location 0 0 2.5
+}
+
+Table {
+  translation 0 0 0
+  size 1 1 0.7
+}
+
+DEF ARM Robot {
+  translation 0 0 0.7
+  children [
+    DEF BASE_BODY Solid {
+      children [
+        DEF BASE_SHAPE Shape {
+          appearance BrushedAluminium {
+            colorOverride 0.75 0.75 0.75
+          }
+          geometry Cylinder {
+            height 0.12
+            radius 0.18
+            subdivision 32
+          }
+        }
+        Transform {
+          translation 0 0 0.06
+          children [
+            Shape {
+              appearance BrushedAluminium {
+                colorOverride 0.7 0.7 0.7
+              }
+              geometry Cylinder {
+                height 0.02
+                radius 0.2
+                subdivision 32
+              }
+            }
+          ]
+        }
+        Transform {
+          translation 0 0 -0.06
+          children [
+            Shape {
+              appearance BrushedAluminium {
+                colorOverride 0.7 0.7 0.7
+              }
+              geometry Cylinder {
+                height 0.02
+                radius 0.2
+                subdivision 32
+              }
+            }
+          ]
+        }
+        Transform {
+          translation 0 0 0
+          rotation 1 0 0 1.5708
+          children [
+            Shape {
+              appearance BrushedAluminium {
+                colorOverride 0.8 0.8 0.8
+              }
+              geometry Cylinder {
+                height 0.03
+                radius 0.03
+                subdivision 16
+              }
+            }
+          ]
+        }
+      ]
+      name "base"
+      boundingObject USE BASE_SHAPE
+    }
+    DEF JOINT1 HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 0 1
+        anchor 0 0 0.06
+        minStop -2.0
+        maxStop 2.0
+      }
+      device [
+        RotationalMotor {
+          name "motor1"
+          maxTorque 100
+        }
+        PositionSensor {
+          name "position_sensor1"
+        }
+      ]
+      endPoint Solid {
+        translation 0 0 0.1
+        children [
+          DEF SHOULDER Shape {
+            appearance BrushedAluminium {
+              colorOverride 0.3 0.3 0.9
+            }
+            geometry Cylinder {
+              height 0.08
+              radius 0.06
+              subdivision 24
+            }
+          }
+          DEF ARM1_BODY Transform {
+            translation 0 0.15 0
+            children [
+              Shape {
+                appearance GalvanizedMetal {
+                  colorOverride 0.3 0.3 0.9
+                }
+                geometry Box {
+                  size 0.1 0.3 0.08
+                }
+              }
+              Transform {
+                translation 0 0 0
+                children [
+                  Shape {
+                    appearance GalvanizedMetal {
+                      colorOverride 0.2 0.2 0.8
+                    }
+                    geometry Sphere {
+                      radius 0.05
+                      subdivision 3
+                    }
+                  }
+                ]
+              }
+              Transform {
+                translation 0 0.15 0
+                children [
+                  DEF ELBOW Shape {
+                    appearance BrushedAluminium {
+                      colorOverride 0.9 0.3 0.3
+                    }
+                    geometry Sphere {
+                      radius 0.05
+                      subdivision 3
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+          Transform {
+            translation 0 0.3 0
+            children [
+              DEF JOINT2 HingeJoint {
+                jointParameters HingeJointParameters {
+                  axis 1 0 0
+                  minStop -1.5
+                  maxStop 1.5
+                }
+                device [
+                  RotationalMotor {
+                    name "motor2"
+                    maxTorque 100
+                  }
+                  PositionSensor {
+                    name "position_sensor2"
+                  }
+                ]
+                endPoint Solid {
+                  translation 0 0.15 0
+                  rotation 1 0 0 0
+                  children [
+                    DEF ARM2_BODY Shape {
+                      appearance GalvanizedMetal {
+                        colorOverride 0.9 0.3 0.3
+                      }
+                      geometry Box {
+                        size 0.08 0.3 0.06
+                      }
+                    }
+                    Transform {
+                      translation 0 0.15 0
+                      children [
+                        DEF WRIST Shape {
+                          appearance BrushedAluminium {
+                            colorOverride 0.3 0.9 0.3
+                          }
+                          geometry Sphere {
+                            radius 0.04
+                            subdivision 3
+                          }
+                        }
+                      ]
+                    }
+                    Transform {
+                      translation 0 0.15 0
+                      children [
+                        DEF JOINT3 HingeJoint {
+                          jointParameters HingeJointParameters {
+                            axis 1 0 0
+                            minStop -1.5
+                            maxStop 1.5
+                          }
+                          device [
+                            RotationalMotor {
+                              name "motor3"
+                              maxTorque 100
+                            }
+                            PositionSensor {
+                              name "position_sensor3"
+                            }
+                          ]
+                          endPoint Solid {
+                            translation 0 0.07 0
+                            children [
+                              DEF GRIPPER_BASE Shape {
+                                appearance BrushedAluminium {
+                                  colorOverride 0.3 0.9 0.3
+                                }
+                                geometry Box {
+                                  size 0.07 0.15 0.05
+                                }
+                              }
+                              Transform {
+                                translation 0 0.08 0
+                                children [
+                                  Shape {
+                                    appearance BrushedAluminium {
+                                      colorOverride 0.4 0.8 0.4
+                                    }
+                                    geometry Cylinder {
+                                      height 0.03
+                                      radius 0.035
+                                      subdivision 16
+                                    }
+                                  }
+                                ]
+                              }
+                              
+                              # Left gripper finger
+                              Transform {
+                                translation -0.04 0.08 0
+                                children [
+                                  DEF GRIPPER_JOINT1 SliderJoint {
+                                    jointParameters JointParameters {
+                                      axis 1 0 0
+                                      minStop -0.02
+                                      maxStop 0.02
+                                    }
+                                    device [
+                                      LinearMotor {
+                                        name "gripper_left"
+                                        maxForce 50
+                                      }
+                                      PositionSensor {
+                                        name "gripper_left_sensor"
+                                      }
+                                    ]
+                                    endPoint Solid {
+                                      translation -0.025 0 0
+                                      children [
+                                        DEF FINGER_LEFT Shape {
+                                          appearance Rubber {
+                                            colorOverride 0.2 0.2 0.2
+                                          }
+                                          geometry Box {
+                                            size 0.05 0.12 0.02
+                                          }
+                                        }
+                                      ]
+                                      name "left_finger"
+                                      boundingObject USE FINGER_LEFT
+                                      physics Physics {
+                                        density -1
+                                        mass 0.05
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                              
+                              # Right gripper finger
+                              Transform {
+                                translation 0.04 0.08 0
+                                children [
+                                  DEF GRIPPER_JOINT2 SliderJoint {
+                                    jointParameters JointParameters {
+                                      axis -1 0 0
+                                      minStop -0.02
+                                      maxStop 0.02
+                                    }
+                                    device [
+                                      LinearMotor {
+                                        name "gripper_right"
+                                        maxForce 50
+                                      }
+                                      PositionSensor {
+                                        name "gripper_right_sensor"
+                                      }
+                                    ]
+                                    endPoint Solid {
+                                      translation 0.025 0 0
+                                      children [
+                                        DEF FINGER_RIGHT Shape {
+                                          appearance Rubber {
+                                            colorOverride 0.2 0.2 0.2
+                                          }
+                                          geometry Box {
+                                            size 0.05 0.12 0.02
+                                          }
+                                        }
+                                      ]
+                                      name "right_finger"
+                                      boundingObject USE FINGER_RIGHT
+                                      physics Physics {
+                                        density -1
+                                        mass 0.05
+                                      }
+                                    }
+                                  }
+                                ]
+                              }
+                            ]
+                            name "arm_end"
+                            boundingObject USE GRIPPER_BASE
+                            physics Physics {
+                              density -1
+                              mass 0.2
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                  name "arm2"
+                  boundingObject USE ARM2_BODY
+                  physics Physics {
+                    density -1
+                    mass 0.5
+                  }
+                }
+              }
+            ]
+          }
+        ]
+        name "arm1"
+        boundingObject USE SHOULDER
+        physics Physics {
+          density -1
+          mass 0.5
+        }
+      }
+    }
+  ]
+  controller "arm_controller"
+} 
